@@ -7,92 +7,111 @@
                                      initial-scale=1.0,
                                      maximum-scale=1.0,
                                      user-scalable=no">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
 
 </head>
 <body>
 
-<nav class="navbar navbar-inverse">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">流程文件管理</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">文件管理</a></li>
-                <li><a href="#about">About</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
 
 <div class="container">
+    <div id="actionarea">
 
-    <div id="actionarea" class="starter-template">
+    <el-menu
+            :default-active="activeIndex2"
+            class="el-menu-demo"
+            mode="horizontal"
+            @select="handleSelect"
+            background-color="#545c64"
+            text-color="#fff"
+            active-text-color="#ffd04b">
+        <el-menu-item index="1">处理中心</el-menu-item>
+        <el-submenu index="2">
+            <template slot="title">我的工作台</template>
+            <el-menu-item index="2-1">选项1</el-menu-item>
+            <el-menu-item index="2-2">选项2</el-menu-item>
+            <el-menu-item index="2-3">选项3</el-menu-item>
+            <el-submenu index="2-4">
+                <template slot="title">选项4</template>
+                <el-menu-item index="2-4-1">选项1</el-menu-item>
+                <el-menu-item index="2-4-2">选项2</el-menu-item>
+                <el-menu-item index="2-4-3">选项3</el-menu-item>
+            </el-submenu>
+        </el-submenu>
+        <el-menu-item index="3" disabled>消息中心</el-menu-item>
+        <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
+    </el-menu>
+<br/>
+        <el-row>
 
-        <button type="button" @click="get('add')" class="btn btn-primary">1加入流程</button>
-        <button type="button" @click="get('del')" class="btn btn-primary">2删除流程</button>
-        <button type="button" @click="get('list')" class="btn btn-primary">3查看流程</button>
+            <el-button type="primary" @click.native="get('list')">列出流程</el-button>
+            <el-button type="primary" @click.native="get('add')">添加流程</el-button>
+            <el-button @click.native="get('del')" type="primary">删除流程</el-button>
 
-
+        </el-row>
     </div>
     <div id="actionresult">
-        no result;
+        {{returnSatausStr}}
     </div>
 
 </div>
-<!-- /.container -->
-
-<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
 
 
 <script type = "text/javascript">
-    window.onload = function(){
+    var Main = {
+        data() {
+            return {
+                activeIndex: '1',
+                activeIndex2: '4',
+                returnSatausStr: '无记录'
+            };
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
 
-        var vm = new Vue({
-            el:'#actionarea',
-            data:{
-                msg:'Hello World!',
             },
-            methods:{
-                get:function(action){
-                   //发送get请求
-                    var resultStr;
-                    var searchStr;
+            get:function(action){
+                //发送get请求
+                var resultStr;
+                var searchStr;
 
-                    switch(action)
-                    {
-                        case "add":
-                            searchStr= "./add";
-                            break;
-                        case "del":
-                            searchStr= "./del";
-                            break;
-                        default:
-                            searchStr= "./list";
-
-                    }
-
-                    this.$http.get(searchStr).then(function(res){
-                       resultStr = res.body;
-                       alert(resultStr);
-                        $("#actionresult").html(resultStr);
-                    },function(){
-                        console.log('请求失败处理');
-                    });
-
-
+                switch(action)
+                {
+                    case "add":
+                        searchStr= "./add";
+                        break;
+                    case "del":
+                        searchStr= "./del";
+                        break;
+                    default:
+                        searchStr= "./list";
 
                 }
+
+                this.$http.get(searchStr).then(function(res){
+
+                  this.returnSatausStr = res.body;
+
+
+                },function(){
+                    console.log('请求失败处理');
+                });
+
+
+
             }
-        });
+        }
     }
+    var Ctor = Vue.extend(Main)
+    new Ctor().$mount('.container')
+
 </script>
 </body>
 </html>

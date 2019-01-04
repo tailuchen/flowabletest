@@ -6,7 +6,15 @@ import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.Deployment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +25,7 @@ public class MyBProcessManager {
     @Autowired
    private transient RepositoryService repositoryService;
 
-    private String resourcePath = "myprocesses/";
+    private  transient String resourcePath = "myprocesses/";
     public String publishProcessDefintion(String xmlName) {
         String xmlFullPathName = resourcePath + xmlName;
         Deployment deployment = repositoryService.createDeployment()
@@ -26,6 +34,10 @@ public class MyBProcessManager {
         logger.info("add" + deployment.getId());
         return deployment.getId() ;
 
+    }
+
+    public String getResourcePath() {
+        return resourcePath;
     }
 
     public List<String> getAllpublishProcessDefintion() {
